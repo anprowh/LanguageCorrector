@@ -64,6 +64,6 @@ def change_language(classifier: WordClassifier):
 
 if __name__ == '__main__':
     classifier = WordClassifier()
-    hotkey = 'ctrl+alt+k'
+    hotkey = open('config.txt', 'r').read().strip().split(':')[1].strip()
     keyboard.add_hotkey(hotkey, change_language, args=(classifier,))
     keyboard.wait('esc')

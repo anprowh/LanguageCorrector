@@ -1,0 +1,1 @@
+hotkey: ctrl+alt+k
