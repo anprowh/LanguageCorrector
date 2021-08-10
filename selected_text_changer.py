@@ -52,8 +52,14 @@ def change_language(classifier: WordClassifier):
 
     classes = classifier.classify_words(prepared_r_words)
 
-    res_words = [''.join((eng_to_rus_dict[c] if c in eng_letters else c) for c in x) if i else
-                 ''.join((rus_to_eng_dict[c] if c in rus_letters else c) for c in x) for i, x in zip(classes, s)]
+    ext_rus_letters = rus_letters + rus_letters.upper() + '.,"№;:?/'
+    ext_eng_letters = eng_letters + \
+        'QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>~/?@#$^&|'
+    rus_to_eng_dict = {r: e for r, e in zip(ext_rus_letters, ext_eng_letters)}
+    eng_to_rus_dict = {e: r for r, e in zip(ext_rus_letters, ext_eng_letters)}
+
+    res_words = [''.join((eng_to_rus_dict[c] if c in ext_eng_letters else c) for c in x) if i else
+                 ''.join((rus_to_eng_dict[c] if c in ext_rus_letters else c) for c in x) for i, x in zip(classes, s)]
 
     new_s = ' '.join(res_words)
     sleep(0.1)
