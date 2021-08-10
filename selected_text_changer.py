@@ -1,3 +1,4 @@
+from enum import Enum
 import pyperclip
 from typing import List
 from sklearn.preprocessing import OneHotEncoder
@@ -7,8 +8,20 @@ import keyboard
 from time import sleep
 import sys
 
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+class Lang(str, Enum):
+    ru_RU = 'ё1234567890-=йцукенгшщзхъ\\фывапролджэячсмитьбю.Ё!"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,'
+    en_US = '`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
+
+
+translators = {
+    Lang.en_US: str.maketrans(Lang.ru_RU, Lang.en_US),
+    Lang.ru_RU: str.maketrans(Lang.en_US, Lang.ru_RU)
+}
+
+
+def translate(words: List[str], langs: List[Lang]) -> List[str]:
+    return list(map(lambda word, lang: word.translate(translators[lang]), words, langs))
 
 
 class WordClassifier:
