@@ -21,6 +21,8 @@ Run selected_text_changer.py with Python
 
 `python selected_text_changer.py`
 
+Select text you want to correct and use hotkey
+
 Default hotkey is `ctrl+alt+k`
 
 You can set your hotkey in config.txt file
