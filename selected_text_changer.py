@@ -1,6 +1,5 @@
-from enum import Enum
 from time import sleep
-from typing import List, Optional
+from typing import List
 
 import keyboard
 import numpy as np
@@ -8,35 +7,7 @@ import pyperclip
 import tensorflow as tf
 from sklearn.preprocessing import OneHotEncoder
 
-
-class Lang(str, Enum):
-    en_US = 'abcdefghijklmnopqrstuvwxyz'
-    ru_RU = 'абвгдеёжзийклмнопрстуфхцщшчъыьэюя'
-
-
-keyboard_layouts = {
-    Lang.ru_RU: 'ё1234567890-=йцукенгшщзхъ\\фывапролджэячсмитьбю.Ё!"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,',
-    Lang.en_US: '`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
-}
-
-
-def define_lang(word: str) -> Optional[Lang]:
-    lang: Lang
-    for lang in Lang:
-        if all(letter in lang for letter in word):
-            return lang
-    return None
-
-
-translators = {(lang, lang_to): str.maketrans(keyboard_layouts[lang], keyboard_layouts[lang_to]) for lang in Lang for lang_to in Lang}
-
-
-def translate(word: str, lang_to: Lang):
-    return word.translate(translators[define_lang(word), lang_to])
-
-
-def translate_list(words: List[str], langs_to: List[Lang]) -> List[str]:
-    return list(map(lambda word, lang_to: translate(word, lang_to), words, langs_to))
+from translator import Lang, translate_list
 
 
 class WordClassifier:
