@@ -14,10 +14,7 @@ class Lang(str, Enum):
     en_US = '`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
 
 
-translators = {
-    Lang.en_US: str.maketrans(Lang.ru_RU, Lang.en_US),
-    Lang.ru_RU: str.maketrans(Lang.en_US, Lang.ru_RU)
-}
+translators = {(lang, lang_to): str.maketrans(lang, lang_to) for lang in Lang for lang_to in Lang}
 
 
 def translate(words: List[str], langs: List[Lang]) -> List[str]:
