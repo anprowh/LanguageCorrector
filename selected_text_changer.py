@@ -1,6 +1,6 @@
 from enum import Enum
 import pyperclip
-from typing import List
+from typing import List, Optional
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
 import numpy as np
@@ -10,8 +10,16 @@ import sys
 
 
 class Lang(str, Enum):
-    ru_RU = 'ё1234567890-=йцукенгшщзхъ\\фывапролджэячсмитьбю.Ё!"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,'
     en_US = '`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
+    ru_RU = 'ё1234567890-=йцукенгшщзхъ\\фывапролджэячсмитьбю.Ё!"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,'
+
+
+def define_lang(word: str) -> Optional[Lang]:
+    lang: Lang
+    for lang in Lang:
+        if all(letter in lang for letter in word):
+            return lang
+    return None
 
 
 translators = {(lang, lang_to): str.maketrans(lang, lang_to) for lang in Lang for lang_to in Lang}
