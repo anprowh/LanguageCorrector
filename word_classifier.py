@@ -14,7 +14,7 @@ class WordClassifier:
         eng_letters = 'qwertyuiop[]asdfghjkl;\'zxcvbnm,.`'
         self.eng_to_rus_dict = {e: r for e,
                                          r in zip(eng_letters, self.rus_letters)}
-        self.model = tf.keras.models.load_model('./word_classifier.hdf5')
+        self.model = tf.keras.models.load_model('tf_models/word_classifier.hdf5')
         self.char_encoder = OneHotEncoder()
         self.char_encoder.fit([[c] for c in self.rus_letters])
 
