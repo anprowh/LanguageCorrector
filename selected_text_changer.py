@@ -10,8 +10,14 @@ from sklearn.preprocessing import OneHotEncoder
 
 
 class Lang(str, Enum):
-    en_US = '`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
-    ru_RU = 'ё1234567890-=йцукенгшщзхъ\\фывапролджэячсмитьбю.Ё!"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,'
+    en_US = 'abcdefghijklmnopqrstuvwxyz'
+    ru_RU = 'абвгдеёжзийклмнопрстуфхцщшчъыьэюя'
+
+
+keyboard_layouts = {
+    Lang.ru_RU: 'ё1234567890-=йцукенгшщзхъ\\фывапролджэячсмитьбю.Ё!"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,',
+    Lang.en_US: '`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
+}
 
 
 def define_lang(word: str) -> Optional[Lang]:
@@ -22,7 +28,7 @@ def define_lang(word: str) -> Optional[Lang]:
     return None
 
 
-translators = {(lang, lang_to): str.maketrans(lang, lang_to) for lang in Lang for lang_to in Lang}
+translators = {(lang, lang_to): str.maketrans(keyboard_layouts[lang], keyboard_layouts[lang_to]) for lang in Lang for lang_to in Lang}
 
 
 def translate(word: str, lang_to: Lang):
