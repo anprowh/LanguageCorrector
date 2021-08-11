@@ -1,36 +1,49 @@
 from enum import Enum
-from typing import Optional, List
+from typing import List
 
 
-class Lang(str, Enum):
-    en_US = 'abcdefghijklmnopqrstuvwxyz'
-    ru_RU = 'абвгдеёжзийклмнопрстуфхцщшчъыьэюя'
+class Lang(Enum):
+    en_US = frozenset('abcdefghijklmnopqrstuvwxyz')
+    ru_RU = frozenset('абвгдеёжзийклмнопрстуфхцщшчъыьэюя')
 
 
 keyboard_layouts = {
-    Lang.ru_RU: 'ё1234567890-=йцукенгшщзхъ\\фывапролджэячсмитьбю.Ё!"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,',
-    Lang.en_US: '`1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
+    Lang.ru_RU: tuple('ё1234567890-='
+                      'йцукенгшщзхъ\\'
+                      'фывапролджэ'
+                      'ячсмитьбю.'
+                      'Ё!"№;%:?*()_+'
+                      'ЙЦУКЕНГШЩЗХЪ/'
+                      'ФЫВАПРОЛДЖЭ'
+                      'ЯЧСМИТЬБЮ,'),
+    Lang.en_US: tuple('`1234567890-='
+                      'qwertyuiop[]\\'
+                      'asdfghjkl;\''
+                      'zxcvbnm,./'
+                      '~!@#$%^&*()_+'
+                      'QWERTYUIOP{}|'
+                      'ASDFGHJKL:"'
+                      'ZXCVBNM<>?')
 }
 
-
 layout_translators = {
-    (lang, lang_to): str.maketrans(keyboard_layouts[lang], keyboard_layouts[lang_to])
+    (lang, lang_to): str.maketrans(dict(zip(keyboard_layouts[lang], keyboard_layouts[lang_to])))
     for lang in Lang
     for lang_to in Lang
 }
 
 
-def define_lang(word: str) -> Optional[Lang]:
-    lang: Lang
+def define_lang(word: str) -> Lang:
+    word_set = set(word)
     for lang in Lang:
-        if all(letter in lang for letter in word):
+        if word_set & lang.value == word_set:
             return lang
-    return None
+    raise Exception(f"Can't recognize language of word \"{word}\"")
 
 
-def translate(word: str, lang_to: Lang):
+def translate(word: str, lang_to: Lang) -> str:
     return word.translate(layout_translators[define_lang(word), lang_to])
 
 
 def translate_list(words: List[str], langs_to: List[Lang]) -> List[str]:
-    return list(map(lambda word, lang_to: translate(word, lang_to), words, langs_to))
+    return list(map(translate, words, langs_to))
