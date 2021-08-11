@@ -1,6 +1,6 @@
 from enum import Enum
 import pyperclip
-from typing import List, Optional
+from typing import List, Optional, Dict, Tuple
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
 import numpy as np
@@ -25,8 +25,12 @@ def define_lang(word: str) -> Optional[Lang]:
 translators = {(lang, lang_to): str.maketrans(lang, lang_to) for lang in Lang for lang_to in Lang}
 
 
-def translate(words: List[str], langs: List[Lang]) -> List[str]:
-    return list(map(lambda word, lang: word.translate(translators[lang]), words, langs))
+def translate(word: str, lang_to: Lang):
+    return word.translate(translators[define_lang(word), lang_to])
+
+
+def translate_list(words: List[str], langs_to: List[Lang]) -> List[str]:
+    return list(map(lambda word, lang_to: translate(word, lang_to), words, langs_to))
 
 
 class WordClassifier:
