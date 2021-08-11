@@ -90,6 +90,15 @@ def change_language(classifier: WordClassifier):
     sleep(0.1)
     keyboard.send('ctrl+v')
 
+
+def main():
+    pass
+
+
+if __name__ == '__main__':
+    main()
+
+
 # if __name__ == '__main__':
 #     classifier = WordClassifier()
 #     hotkey = open('config.txt', 'r').read().strip().split(':')[1].strip()
