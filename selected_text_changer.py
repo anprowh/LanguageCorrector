@@ -44,6 +44,9 @@ class WordClassifier:
         self.char_encoder = OneHotEncoder()
         self.char_encoder.fit([[c] for c in self.rus_letters])
 
+    def get_langs(self, words: List[str]) -> List[Lang]:
+        return [Lang.ru_RU if num else Lang.en_US for num in self.classify_words(words)]
+
     def classify_words(self, words: List[str]):
         return np.argmax(self.model.predict(self.transform_words(words).reshape((-1, 33 * self.n_letters))), axis=-1)
 
@@ -54,6 +57,13 @@ class WordClassifier:
 
     def transform_words(self, words: List[str]) -> np.ndarray:
         return np.array([self.transform_word(x) for x in words])
+
+
+def auto_translate(text: str, classifier: WordClassifier) -> str:
+    words = text.split()
+    prepared_words = translate_list(words, [Lang.ru_RU] * len(words))
+    langs_to = classifier.get_langs(prepared_words)
+    return " ".join(translate_list(words, langs_to))
 
 
 def change_language(classifier: WordClassifier):
