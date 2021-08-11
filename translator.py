@@ -3,8 +3,8 @@ from typing import List
 
 
 class Lang(Enum):
-    en_US = frozenset('abcdefghijklmnopqrstuvwxyz')
-    ru_RU = frozenset('абвгдеёжзийклмнопрстуфхцщшчъыьэюя')
+    en_US = tuple('abcdefghijklmnopqrstuvwxyz')
+    ru_RU = tuple('абвгдеёжзийклмнопрстуфхцщшчъыьэюя')
 
 
 keyboard_layouts = {
@@ -36,7 +36,7 @@ layout_translators = {
 def define_lang(word: str) -> Lang:
     word_set = set(word)
     for lang in Lang:
-        if word_set & lang.value == word_set:
+        if word_set & set(lang.value) == word_set:
             return lang
     raise Exception(f"Can't recognize language of word \"{word}\"")
 
