@@ -7,7 +7,7 @@ import pyperclip
 import tensorflow as tf
 from sklearn.preprocessing import OneHotEncoder
 
-from translator import Lang, translate_list
+from translator import Lang, translate_list, translate
 
 
 class WordClassifier:
@@ -21,7 +21,18 @@ class WordClassifier:
         self.char_encoder = OneHotEncoder()
         self.char_encoder.fit([[c] for c in self.rus_letters])
 
+    def prepare_word(self, word: str) -> str:
+        alpha_word = "".join(filter(str.isalpha, word))
+        short_word = alpha_word[:self.n_letters]
+        lover_word = short_word.lower()
+        rus_word = translate(lover_word, Lang.ru_RU)
+        return rus_word
+
+    def prepare_words(self, words: List[str]) -> List[str]:
+        return list(map(self.prepare_word, words))
+
     def get_langs(self, words: List[str]) -> List[Lang]:
+        words = self.prepare_words(words)
         return [Lang.ru_RU if num else Lang.en_US for num in self.classify_words(words)]
 
     def classify_words(self, words: List[str]):
@@ -38,8 +49,7 @@ class WordClassifier:
 
 def auto_translate(text: str, classifier: WordClassifier) -> str:
     words = text.split()
-    prepared_words = translate_list(words, [Lang.ru_RU] * len(words))
-    langs_to = classifier.get_langs(prepared_words)
+    langs_to = classifier.get_langs(words)
     return " ".join(translate_list(words, langs_to))
 
 
