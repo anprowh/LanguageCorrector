@@ -2,7 +2,6 @@ from typing import List
 
 import numpy as np
 import tensorflow as tf
-from sklearn.preprocessing import OneHotEncoder
 
 from translator import Lang, translate
 
@@ -10,10 +9,8 @@ from translator import Lang, translate
 class WordClassifier:
     def __init__(self) -> None:
         self.n_letters = 8
-        self.rus_letters = 'йцукенгшщзхъфывапролджэячсмитьбюё'
+        self.alphabet: tuple = Lang.ru_RU.value
         self.model = tf.keras.models.load_model('tf_models/word_classifier.hdf5')
-        self.char_encoder = OneHotEncoder()
-        self.char_encoder.fit([[c] for c in self.rus_letters])
 
     def prepare_word(self, word: str) -> str:
         alpha_word = "".join(filter(str.isalpha, word))
@@ -33,9 +30,18 @@ class WordClassifier:
         return np.argmax(self.model.predict(self.transform_words(words).reshape((-1, 33 * self.n_letters))), axis=-1)
 
     def transform_word(self, word: str) -> np.ndarray:
-        word = np.array(list(word)).reshape((-1, 1))
-        return np.append(self.char_encoder.transform(word).toarray(), (np.zeros((self.n_letters, 33))), axis=0)[
-               :self.n_letters]
+        encoded_word = list(map(self.encode_char, word))
+        filled_word = self.fill_encoded_word(encoded_word)
+        return np.array(filled_word)
 
     def transform_words(self, words: List[str]) -> np.ndarray:
         return np.array([self.transform_word(x) for x in words])
+
+    def encode_char(self, char: str) -> List[int]:
+        encoded_char = [0] * len(self.alphabet)
+        encoded_char[self.alphabet.index(char)] = 1
+        return encoded_char
+
+    def fill_encoded_word(self, encoded_word: List[List[int]]):
+        fill_list = [[0] * len(self.alphabet) for _ in range(self.n_letters - len(encoded_word))]
+        return encoded_word + fill_list
