@@ -4,7 +4,7 @@ from typing import List
 
 class Lang(Enum):
     en_US = tuple('abcdefghijklmnopqrstuvwxyz')
-    ru_RU = tuple('абвгдеёжзийклмнопрстуфхцщшчъыьэюя')
+    ru_RU = tuple('абвгдежзийклмнопрстуфхцщшчъыьэюяё')
 
 
 keyboard_layouts = {
